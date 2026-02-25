@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+{% if login %}
+<h2>🔐 Admin Login</h2>
+<form method="post">
+<input type="hidden" name="login">
+<input name="user" placeholder="Usuário">
+<input type="password" name="senha" placeholder="Senha">
+<button>Entrar</button>
+</form>
+{% else %}
+<h2>📊 Dashboard</h2>
+<p>Total Pedidos: {{total_pedidos}}</p>
+<p>Total Vendido: R$ {{total_vendas}}</p>
+
+<canvas id="grafico"></canvas>
+
+<h3>Criar Cupom</h3>
+<form method="post">
+<input type="hidden" name="cupom">
+<input name="codigo" placeholder="Código">
+<input name="desconto" placeholder="% desconto">
+<button>Criar</button>
+</form>
+
+<hr>
+{% for p in pedidos %}
+<p>{{p[0]}} | {{p[1]}} | R$ {{p[2]}}</p>
+{% endfor %}
+
+<a href="/logout">Logout</a>
+{% endif %}
+</div>
+
+{% if not login %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+new Chart(document.getElementById("grafico"),{
+type:"line",
+data:{
+labels:["-6d","-5d","-4d","-3d","-2d","-1d","Hoje"],
+datasets:[{
+label:"Vendas últimos 7 dias",
+data:{{grafico}},
+borderColor:"#a020f0",
+fill:false
+}]
+}
+});
+</script>
+{% endif %}
+{% endblock %}
